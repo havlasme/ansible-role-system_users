@@ -1,0 +1,8 @@
+---
+system_users__ansible: []
+
+system_users__list: []
+
+system_users__default_groups_list: []
+
+system_users__default_groups_append: True

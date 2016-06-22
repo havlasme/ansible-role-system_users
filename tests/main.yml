@@ -1,0 +1,172 @@
+---
+- name: Initialize test docker containers
+  hosts: localhost
+  roles:
+    - role: 'provision_docker'
+      provision_docker__inventory:
+        - name: 'test_system_users_main_centos7'
+          image: 'tomashavlas/ansible-test:centos7'
+          volumes:
+            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+        - name: 'test_system_users_main_debian8'
+          image: 'tomashavlas/ansible-test:debian8'
+          volumes:
+            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  post_tasks:
+    - name: Wait for SSH connection to docker containers
+      wait_for:
+        host: '{{ hostvars[item.name]["ansible_ssh_host"] }}'
+        port: 22
+        timeout: 30
+        connect_timeout: 30
+      with_items: '{{ provision_docker__inventory }}'
+  tags: [ 'initialize-docker' ]
+
+- name: Run system_users role basic test scenario
+  hosts: provision_docker__containers
+  remote_user: 'root'
+  pre_tasks:
+    - name: Create test helper groups
+      group:
+        name: '{{ item }}'
+        state: 'present'
+      with_items:
+        - 'testgrp1'
+        - 'testgrp2'
+        - 'testgrp3'
+        - 'testgrp4'
+      changed_when: False
+      tags: [ 'pre-test' ]
+    - name: Create "remove me" test user
+      user:
+        name: 'removeme'
+        state: 'present'
+      changed_when: False
+      tags: [ 'pre-test' ]
+  post_tasks:
+    - name: Test ansible dedicated user presence
+      user:
+        name: 'ansible'
+        uid: 2100
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test simple user presence
+      user:
+        name: 'test'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test advanced user presence
+      user:
+        name: 'testadv'
+        comment: 'comment'
+        createhome: 'yes'
+        group: 'testgrp1'
+        groups: 'testgrp2,testgrp3,testgrp4'
+        home: '/opt/testadv'
+        password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
+        shell: '/bin/sh'
+        system: 'no'
+        update_password: 'always'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test system user presence
+      user:
+        name: 'testsys'
+        system: 'yes'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test disabled user absence
+      user:
+        name: 'disabled'
+        state: 'absent'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test sample user absence
+      user:
+        name: 'removeme'
+        state: 'absent'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test not disabled user presence
+      user:
+        name: 'notdisabled'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test root user is not changed
+      user:
+        name: 'root'
+        uid: 0
+        home: '/root'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+  roles:
+      - role: 'system_users'
+# test ansible dedicated user
+        system_users__ansible:
+          - name: 'ansible'
+            uid: 2100
+
+        system_users__list:
+# test simple user
+          - name: 'test'
+
+# test advanced user
+          - name: 'testadv'
+            comment: 'comment'
+            createhome: 'yes'
+            group: 'testgrp1'
+            groups:
+              - 'testgrp2'
+              - 'testgrp3'
+              - 'testgrp4'
+            home: '/opt/testadv'
+            password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
+            shell: '/bin/sh'
+            system: 'no'
+            generate_ssh_key: 'yes'
+            ssh_key_bits: 4096
+            ssh_key_comment: 'test_ssh_key'
+            ssh_key_file: '.ssh/id_rsa4096'
+            ssh_key_type: 'rsa'
+
+# test system user
+          - name: 'testsys'
+            system: 'yes'
+
+# test disabled user
+          - name: 'disabled'
+            disabled: True
+          - name: 'removeme'
+            remove: 'yes'
+            disabled: True
+
+# test not disabled user
+          - name: 'notdisabled'
+            disabled: False
+
+# test root user
+          - name: 'root'
+            uid: 1500
+            home: '/opt/root'

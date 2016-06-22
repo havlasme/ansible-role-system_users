@@ -1,0 +1,24 @@
+dependencies: []
+
+galaxy_info:
+  author: 'Tomáš Havlas'
+  description: 'Manage system users.'
+  company: 'Raven Systems'
+  issue_tracker_url: 'https://github.com/tomashavlas/ansible-role-system_users/issues'
+  license: 'BSD'
+  min_ansible_version: 1.7
+  github_branch: 'master'
+  platforms:
+  - name: Debian
+    versions:
+      - jessie
+  - name: EL
+    versions:
+      - 7
+  - name: Fedora
+    versions:
+      - 23
+  galaxy_tags:
+    - 'user'
+    - 'users'
+    - 'system'

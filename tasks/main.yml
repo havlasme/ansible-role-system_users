@@ -1,0 +1,32 @@
+---
+- name: Manage system users
+  user:
+    name: '{{ item.name }}'
+    comment: '{{ item.comment | default(omit) }}'
+    createhome: '{{ item.createhome | default(omit) }}'
+    expires: '{{ item.expires | default(omit) }}'
+    force: '{{ item.force | default(omit) }}'
+    group: '{{ item.group | default(omit) }}'
+    home: '{{ item.home | default(omit) }}'
+    move_home: '{{ item.move_home | default(omit) }}'
+    password: '{{ item.password | default("*") }}'
+    remove: '{{ item.remove | default(omit) }}'
+    shell: '{{ item.shell | default(omit) }}'
+    skeleton: '{{ item.skeleton | default(omit) }}'
+    system: '{{ item.system | default(omit) }}'
+    uid: '{{ item.uid | default(omit) }}'
+    update_password: '{{ item.update_password | default("on_create") }}'
+    generate_ssh_key: '{{ item.generate_ssh_key | default(omit) }}'
+    ssh_key_bits: '{{ item.ssh_key_bits | default(omit) }}'
+    ssh_key_comment: '{{ item.ssh_key_comment | default(omit) }}'
+    ssh_key_file: '{{ item.ssh_key_file | default(omit) }}'
+    ssh_key_passphrase: '{{ item.ssh_key_passphrase | default(omit) }}'
+    ssh_key_type: '{{ item.ssh_key_type | default(omit) }}'
+    state: '{{ "present" if item.disabled is undefined or not item.disabled else "absent" }}'
+  with_flattened:
+    - '{{ system_users__ansible }}'
+    - '{{ system_users__list }}'
+  when: (item.name is defined and item.name and item.name != 'root')
+
+- include: 'homedirs.yml'
+- include: 'groups.yml'
