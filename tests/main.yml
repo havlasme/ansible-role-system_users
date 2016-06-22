@@ -35,11 +35,18 @@
         - 'testgrp2'
         - 'testgrp3'
         - 'testgrp4'
+        - 'homegroup'
       changed_when: False
       tags: [ 'pre-test' ]
     - name: Create "remove me" test user
       user:
         name: 'removeme'
+        state: 'present'
+      changed_when: False
+      tags: [ 'pre-test' ]
+    - name: Create homeowner test user
+      user:
+        name: 'homeowner'
         state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
@@ -121,6 +128,26 @@
       failed_when: ((test_result.failed is defined and test_result.failed) or
                     (test_result.changed is defined and test_result.changed))
       tags: [ 'acceptance-test' ]
+    - name: Test homedir user presence
+      user:
+        name: 'homedir'
+        home: '/opt/homedir'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
+    - name: Test homedir user home directory presence
+      file:
+        path: '/opt/homedir'
+        owner: 'homeowner'
+        group: 'homegroup'
+        mode: '0750'
+        state: 'directory'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
   roles:
     - role: 'system_users'
 # test ansible dedicated user
@@ -170,3 +197,11 @@
         - name: 'root'
           uid: 1500
           home: '/opt/root'
+
+# test home directory creation
+        - name: 'homedir'
+          createhome: 'yes'
+          home: '/opt/homedir'
+          home_owner: 'homeowner'
+          home_group: 'homegroup'
+          home_mode: '0750'
