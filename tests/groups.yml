@@ -22,7 +22,7 @@
       with_items: '{{ provision_docker__inventory }}'
   tags: [ 'initialize-docker' ]
 
-- name: Run system_users role NAMEME test scenario
+- name: Run system_users role append empty default groups test scenario
   hosts: provision_docker__containers
   remote_user: 'root'
   pre_tasks:
@@ -49,6 +49,13 @@
         - 'sample1_2'
         - 'sample1_3'
         - 'sample1_4'
+      changed_when: False
+      tags: [ 'pre-test' ]
+    - name: Create sample test user with no groups
+      user:
+        name: 'sample1_5'
+        groups: ''
+        state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
   post_tasks:
@@ -88,29 +95,44 @@
       failed_when: ((test_result.failed is defined and test_result.failed) or
                     (test_result.changed is defined and test_result.changed))
       tags: [ 'acceptance-test' ]
+    - name: Test system user with only default groups
+      user:
+        name: 'sample1_5'
+        groups: ''
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
   roles:
-      - role: 'system_users'
-        system_users__list:
-          - name: 'sample1_1'
-            append: 'yes'
-            groups:
-              - 'test1grp1'
-              - 'test1grp2'
-          - name: 'sample1_2'
-            append: 'no'
-            groups:
-              - 'test1grp1'
-              - 'test1grp2'
-          - name: 'sample1_3'
-            append: 'yes'
-            groups: []
-          - name: 'sample1_4'
-            append: 'no'
-            groups: []
-        system_users__default_groups_list: []
-        system_users__default_groups_append: True
+    - role: 'system_users'
+      system_users__list:
+# test appending groups with list of groups
+        - name: 'sample1_1'
+          append: 'yes'
+          groups:
+            - 'test1grp1'
+            - 'test1grp2'
+# test replacing groups with list of groups
+        - name: 'sample1_2'
+          append: 'no'
+          groups:
+            - 'test1grp1'
+            - 'test1grp2'
+# test appending groups with empty groups
+        - name: 'sample1_3'
+          append: 'yes'
+          groups: []
+# test replacing groups with empty groups
+        - name: 'sample1_4'
+          append: 'no'
+          groups: []
+# test only with default groups
+        - name: 'sample1_5'
+      system_users__default_groups_list: []
+      system_users__default_groups_append: True
 
-- name: Run system_users role NAMEME test scenario
+- name: Run system_users role replacing groups with empty default groups test scenario
   hosts: provision_docker__containers
   remote_user: 'root'
   pre_tasks:
@@ -137,6 +159,13 @@
         - 'sample2_2'
         - 'sample2_3'
         - 'sample2_4'
+      changed_when: False
+      tags: [ 'pre-test' ]
+    - name: Create sample test user with no groups
+      user:
+        name: 'sample2_5'
+        groups: ''
+        state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
   post_tasks:
@@ -176,29 +205,44 @@
       failed_when: ((test_result.failed is defined and test_result.failed) or
                     (test_result.changed is defined and test_result.changed))
       tags: [ 'acceptance-test' ]
+    - name: Test system user with only default groups
+      user:
+        name: 'sample2_5'
+        groups: ''
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
   roles:
-      - role: 'system_users'
-        system_users__list:
-          - name: 'sample2_1'
-            append: 'yes'
-            groups:
-              - 'test2grp1'
-              - 'test2grp2'
-          - name: 'sample2_2'
-            append: 'no'
-            groups:
-              - 'test2grp1'
-              - 'test2grp2'
-          - name: 'sample2_3'
-            append: 'yes'
-            groups: []
-          - name: 'sample2_4'
-            append: 'no'
-            groups: []
-        system_users__default_groups_list: []
-        system_users__default_groups_append: False
+    - role: 'system_users'
+      system_users__list:
+# test appending groups with list of groups
+        - name: 'sample2_1'
+          append: 'yes'
+          groups:
+            - 'test2grp1'
+            - 'test2grp2'
+# test replacing groups with list of groups
+        - name: 'sample2_2'
+          append: 'no'
+          groups:
+            - 'test2grp1'
+            - 'test2grp2'
+# test appending groups with empty groups
+        - name: 'sample2_3'
+          append: 'yes'
+          groups: []
+# test replacing groups with empty groups
+        - name: 'sample2_4'
+          append: 'no'
+          groups: []
+# test only with default groups
+        - name: 'sample2_5'
+      system_users__default_groups_list: []
+      system_users__default_groups_append: False
 
-- name: Run system_users role NAMEME test scenario
+- name: Run system_users role appending groups with list of default groups test scenario
   hosts: provision_docker__containers
   remote_user: 'root'
   pre_tasks:
@@ -225,6 +269,13 @@
         - 'sample3_2'
         - 'sample3_3'
         - 'sample3_4'
+      changed_when: False
+      tags: [ 'pre-test' ]
+    - name: Create sample test user with no groups
+      user:
+        name: 'sample3_5'
+        groups: ''
+        state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
   post_tasks:
@@ -264,31 +315,46 @@
       failed_when: ((test_result.failed is defined and test_result.failed) or
                     (test_result.changed is defined and test_result.changed))
       tags: [ 'acceptance-test' ]
+    - name: Test system user with only default groups
+      user:
+        name: 'sample3_5'
+        groups: 'test3grp3,test3grp4'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
   roles:
-      - role: 'system_users'
-        system_users__list:
-          - name: 'sample3_1'
-            append: 'yes'
-            groups:
-              - 'test3grp1'
-              - 'test3grp2'
-          - name: 'sample3_2'
-            append: 'no'
-            groups:
-              - 'test3grp1'
-              - 'test3grp2'
-          - name: 'sample3_3'
-            append: 'yes'
-            groups: []
-          - name: 'sample3_4'
-            append: 'no'
-            groups: []
-        system_users__default_groups_list:
-          - 'test3grp3'
-          - 'test3grp4'
-        system_users__default_groups_append: True
+    - role: 'system_users'
+      system_users__list:
+# test appending groups with list of groups
+        - name: 'sample3_1'
+          append: 'yes'
+          groups:
+            - 'test3grp1'
+            - 'test3grp2'
+# test replacing groups with list of groups
+        - name: 'sample3_2'
+          append: 'no'
+          groups:
+            - 'test3grp1'
+            - 'test3grp2'
+# test appending groups with empty groups
+        - name: 'sample3_3'
+          append: 'yes'
+          groups: []
+# test replacing groups with empty groups
+        - name: 'sample3_4'
+          append: 'no'
+          groups: []
+# test only with default groups
+        - name: 'sample3_5'
+      system_users__default_groups_list:
+        - 'test3grp3'
+        - 'test3grp4'
+      system_users__default_groups_append: True
 
-- name: Run system_users role NAMEME test scenario
+- name: Run system_users role replacing groups with list of default groups test scenario
   hosts: provision_docker__containers
   remote_user: 'root'
   pre_tasks:
@@ -315,6 +381,13 @@
         - 'sample4_2'
         - 'sample4_3'
         - 'sample4_4'
+      changed_when: False
+      tags: [ 'pre-test' ]
+    - name: Create sample test user with no groups
+      user:
+        name: 'sample4_5'
+        groups: ''
+        state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
   post_tasks:
@@ -354,26 +427,41 @@
       failed_when: ((test_result.failed is defined and test_result.failed) or
                     (test_result.changed is defined and test_result.changed))
       tags: [ 'acceptance-test' ]
+    - name: Test system user with only default groups
+      user:
+        name: 'sample4_5'
+        groups: 'test4grp3,test4grp4'
+        state: 'present'
+      register: 'test_result'
+      failed_when: ((test_result.failed is defined and test_result.failed) or
+                    (test_result.changed is defined and test_result.changed))
+      tags: [ 'acceptance-test' ]
   roles:
-      - role: 'system_users'
-        system_users__list:
-          - name: 'sample4_1'
-            append: 'yes'
-            groups:
-              - 'test4grp1'
-              - 'test4grp2'
-          - name: 'sample4_2'
-            append: 'no'
-            groups:
-              - 'test4grp1'
-              - 'test4grp2'
-          - name: 'sample4_3'
-            append: 'yes'
-            groups: []
-          - name: 'sample4_4'
-            append: 'no'
-            groups: []
-        system_users__default_groups_list:
-          - 'test4grp3'
-          - 'test4grp4'
-        system_users__default_groups_append: False
+    - role: 'system_users'
+      system_users__list:
+# test appending groups with list of groups
+        - name: 'sample4_1'
+          append: 'yes'
+          groups:
+            - 'test4grp1'
+            - 'test4grp2'
+# test replacing groups with list of groups
+        - name: 'sample4_2'
+          append: 'no'
+          groups:
+            - 'test4grp1'
+            - 'test4grp2'
+# test appending groups with empty groups
+        - name: 'sample4_3'
+          append: 'yes'
+          groups: []
+# test replacing groups with empty groups
+        - name: 'sample4_4'
+          append: 'no'
+          groups: []
+# test only with default groups
+        - name: 'sample4_5'
+      system_users__default_groups_list:
+        - 'test4grp3'
+        - 'test4grp4'
+      system_users__default_groups_append: False
