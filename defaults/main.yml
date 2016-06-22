@@ -25,7 +25,7 @@ system_users__list: []
 ## OPTIONAL: group of user home directory
 #    home_group: string
 ## OPTIONAL: access mode of user home directory
-#    home_mode: int
+#    home_mode: string
 ## OPTIONAL: owener of user home directory
 #    home_owner: string
 ## OPTIONAL: should be user home directory moved, if it's location differs
