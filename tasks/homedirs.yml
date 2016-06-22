@@ -10,8 +10,8 @@
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
   when: ((item.name is defined and item.name and item.name != 'root') and
-         (item.disabled is undefined or not item.disabled) and
-         (item.createhome is undefined or item.createhome) and
+         (item.disabled is undefined or not item.disabled|bool) and
+         (item.createhome is undefined or item.createhome|bool) and
          ((item.home_owner is defined and item.home_owner) or
           (item.home_group is defined and item.home_group) or
           (item.home_mode is defined and item.home_mode)))

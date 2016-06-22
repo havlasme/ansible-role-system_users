@@ -14,7 +14,7 @@
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
   when: ((item.name is defined and item.name and item.name != 'root') and
-         (item.disabled is undefined or not item.disabled) and
+         (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is undefined))
 
 - name: Manage users groups
@@ -27,5 +27,5 @@
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
   when: ((item.name is defined and item.name and item.name != 'root') and
-         (item.disabled is undefined or not item.disabled) and
+         (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is defined))
