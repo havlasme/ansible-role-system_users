@@ -114,6 +114,8 @@ Example Playbook
           ssh_key_comment: 'test_ssh_key'
 ```
 
+For more examples see [test cases](https://github.com/tomashavlas/ansible-role-system_users/tree/master/tests).
+
 License
 -------
 
