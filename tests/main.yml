@@ -122,51 +122,51 @@
                     (test_result.changed is defined and test_result.changed))
       tags: [ 'acceptance-test' ]
   roles:
-      - role: 'system_users'
+    - role: 'system_users'
 # test ansible dedicated user
-        system_users__ansible:
-          - name: 'ansible'
-            uid: 2100
+      system_users__ansible:
+        - name: 'ansible'
+          uid: 2100
 
-        system_users__list:
+      system_users__list:
 # test simple user
-          - name: 'test'
+        - name: 'test'
 
 # test advanced user
-          - name: 'testadv'
-            comment: 'comment'
-            createhome: 'yes'
-            group: 'testgrp1'
-            groups:
-              - 'testgrp2'
-              - 'testgrp3'
-              - 'testgrp4'
-            home: '/opt/testadv'
-            password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
-            shell: '/bin/sh'
-            system: 'no'
-            generate_ssh_key: 'yes'
-            ssh_key_bits: 4096
-            ssh_key_comment: 'test_ssh_key'
-            ssh_key_file: '.ssh/id_rsa4096'
-            ssh_key_type: 'rsa'
+        - name: 'testadv'
+          comment: 'comment'
+          createhome: 'yes'
+          group: 'testgrp1'
+          groups:
+            - 'testgrp2'
+            - 'testgrp3'
+            - 'testgrp4'
+          home: '/opt/testadv'
+          password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
+          shell: '/bin/sh'
+          system: 'no'
+          generate_ssh_key: 'yes'
+          ssh_key_bits: 4096
+          ssh_key_comment: 'test_ssh_key'
+          ssh_key_file: '.ssh/id_rsa4096'
+          ssh_key_type: 'rsa'
 
 # test system user
-          - name: 'testsys'
-            system: 'yes'
+        - name: 'testsys'
+          system: 'yes'
 
 # test disabled user
-          - name: 'disabled'
-            disabled: True
-          - name: 'removeme'
-            remove: 'yes'
-            disabled: True
+        - name: 'disabled'
+          disabled: True
+        - name: 'removeme'
+          remove: 'yes'
+          disabled: True
 
 # test not disabled user
-          - name: 'notdisabled'
-            disabled: False
+        - name: 'notdisabled'
+          disabled: False
 
 # test root user
-          - name: 'root'
-            uid: 1500
-            home: '/opt/root'
+        - name: 'root'
+          uid: 1500
+          home: '/opt/root'
