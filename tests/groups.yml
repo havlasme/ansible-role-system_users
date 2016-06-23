@@ -397,8 +397,7 @@
         groups: 'test4grp1,test4grp2,test4grp3,test4grp4'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test system user with replaced groups
       user:
@@ -406,8 +405,7 @@
         groups: 'test4grp1,test4grp2'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test system user with appended empty groups
       user:
@@ -415,8 +413,7 @@
         groups: 'test4grp3,test4grp4'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test system user with replaced empty groups
       user:
@@ -424,8 +421,7 @@
         groups: ''
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test system user with only default groups
       user:
@@ -433,8 +429,7 @@
         groups: 'test4grp3,test4grp4'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
     - role: 'system_users'

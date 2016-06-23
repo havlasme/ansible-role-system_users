@@ -57,16 +57,14 @@
         uid: 2100
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test simple user presence
       user:
         name: 'test'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test advanced user presence
       user:
@@ -82,8 +80,7 @@
         update_password: 'always'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test system user presence
       user:
@@ -91,32 +88,28 @@
         system: 'yes'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test disabled user absence
       user:
         name: 'disabled'
         state: 'absent'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test sample user absence
       user:
         name: 'removeme'
         state: 'absent'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test not disabled user presence
       user:
         name: 'notdisabled'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test root user is not changed
       user:
@@ -125,8 +118,7 @@
         home: '/root'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test homedir user presence
       user:
@@ -134,8 +126,7 @@
         home: '/opt/homedir'
         state: 'present'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
     - name: Test homedir user home directory presence
       file:
@@ -145,8 +136,7 @@
         mode: '0750'
         state: 'directory'
       register: 'test_result'
-      failed_when: ((test_result.failed is defined and test_result.failed) or
-                    (test_result.changed is defined and test_result.changed))
+      failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
     - role: 'system_users'
