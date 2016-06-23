@@ -1,6 +1,6 @@
 ---
 - name: Get list of available system groups
-  shell: 'getent group | cut -f1 -d:'
+  shell: 'getent group|cut -f1 -d:'
   register: 'system_users__system_groups'
   changed_when: False
 
@@ -8,7 +8,7 @@
   user:
     name: '{{ item.name }}'
     append: '{{ system_users__default_groups_append }}'
-    groups: '{{ system_users__default_groups_list | intersect(system_users__system_groups.stdout_lines) | join(",") }}'
+    groups: '{{ system_users__default_groups_list|intersect(system_users__system_groups.stdout_lines)|join(",") }}'
     state: 'present'
   with_flattened:
     - '{{ system_users__ansible }}'
@@ -21,7 +21,7 @@
   user:
     name: '{{ item.name }}'
     append: '{{ "yes" if system_users__default_groups_append and item.append is defined and item.append|bool else "no" }}'
-    groups: '{{ item.groups | union(system_users__default_groups_list if item.append is defined and item.append|bool else []) | intersect(system_users__system_groups.stdout_lines) | join(",")  }}'
+    groups: '{{ item.groups|union(system_users__default_groups_list if item.append is defined and item.append|bool else [])|intersect(system_users__system_groups.stdout_lines)|join(",")  }}'
     state: 'present'
   with_flattened:
     - '{{ system_users__ansible }}'
