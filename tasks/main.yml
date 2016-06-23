@@ -26,7 +26,7 @@
   with_flattened:
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
-  when: (item.name is defined and item.name and item.name != 'root')
+  when: (item.name is defined and item.name|trim and item.name != 'root')
 
 - include: 'homedirs.yml'
 - include: 'groups.yml'
