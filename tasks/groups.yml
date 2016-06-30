@@ -20,8 +20,8 @@
 - name: Manage users groups
   user:
     name: '{{ item.name }}'
-    append: '{{ "yes" if system_users__default_groups_append and item.append is defined and item.append|bool else "no" }}'
-    groups: '{{ item.groups|union(system_users__default_groups_list if item.append is defined and item.append|bool else [])|intersect(system_users__register_system_groups.stdout_lines)|join(",")  }}'
+    append: '{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary("yes", "no") }}'
+    groups: '{{ item.groups|union((item.append is defined and item.append|bool)|ternary(system_users__default_groups_list, []))|intersect(system_users__register_system_groups.stdout_lines)|join(",")  }}'
     state: 'present'
   with_flattened:
     - '{{ system_users__ansible }}'

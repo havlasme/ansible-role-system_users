@@ -16,6 +16,9 @@ Unreleased
 - Updated minimal Ansible version to `2.0`.
   [tomashavlas]
 
+- Replaced single line conditions with `ternary` filter.
+  [tomashavlas]
+
 v1.0
 ----
 

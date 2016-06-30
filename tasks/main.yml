@@ -22,7 +22,7 @@
     ssh_key_file: '{{ item.ssh_key_file|default(omit) }}'
     ssh_key_passphrase: '{{ item.ssh_key_passphrase|default(omit) }}'
     ssh_key_type: '{{ item.ssh_key_type|default(omit) }}'
-    state: '{{ "present" if item.disabled is undefined or not item.disabled|bool else "absent" }}'
+    state: '{{ (item.disabled is undefined or not item.disabled|bool)|ternary("present", "absent") }}'
   with_flattened:
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
