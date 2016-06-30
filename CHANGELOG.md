@@ -1,8 +1,10 @@
 Changelog
 =========
 
-Unreleased
-----------
+v1.1
+----
+
+*Released: 2016-06-30*
 
 - Added `trim` filter when checking for non-empty variables in conditions.
   [tomashavlas]
