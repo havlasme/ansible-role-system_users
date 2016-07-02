@@ -1,25 +1,11 @@
 ---
-- name: Get list of available system groups
+- name: Configure - Create list of available system groups
   shell: 'getent group|cut -f1 -d:'
   register: 'system_users__register_system_groups'
   changed_when: False
   tags: [ 'configure' ]
 
-- name: Manage users default groups
-  user:
-    name: '{{ item.name }}'
-    append: '{{ system_users__default_groups_append }}'
-    groups: '{{ system_users__default_groups_list|intersect(system_users__register_system_groups.stdout_lines)|join(",") }}'
-    state: 'present'
-  with_flattened:
-    - '{{ system_users__ansible }}'
-    - '{{ system_users__list }}'
-  when: ((item.name is defined and item.name|trim and item.name != 'root') and
-         (item.disabled is undefined or not item.disabled|bool) and
-         (item.groups is undefined))
-  tags: [ 'configure' ]
-
-- name: Manage users groups
+- name: Configure - Update users groups
   user:
     name: '{{ item.name }}'
     append: '{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary("yes", "no") }}'
@@ -31,4 +17,18 @@
   when: ((item.name is defined and item.name|trim and item.name != 'root') and
          (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is defined))
+  tags: [ 'configure' ]
+
+- name: Configure - Update users groups with default groups
+  user:
+    name: '{{ item.name }}'
+    append: '{{ system_users__default_groups_append }}'
+    groups: '{{ system_users__default_groups_list|intersect(system_users__register_system_groups.stdout_lines)|join(",") }}'
+    state: 'present'
+  with_flattened:
+    - '{{ system_users__ansible }}'
+    - '{{ system_users__list }}'
+  when: ((item.name is defined and item.name|trim and item.name != 'root') and
+         (item.disabled is undefined or not item.disabled|bool) and
+         (item.groups is undefined))
   tags: [ 'configure' ]

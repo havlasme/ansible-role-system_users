@@ -1,5 +1,5 @@
 ---
-- name: Manage system users
+- name: Configure - Create, update, and remove system users
   user:
     name: '{{ item.name }}'
     comment: '{{ item.comment|default(omit) }}'

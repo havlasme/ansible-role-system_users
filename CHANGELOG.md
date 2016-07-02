@@ -10,6 +10,9 @@ Unreleased
 - Tagged tasks.
   [tomashavlas]
 
+- Refactores tasks names.
+  [tomashavlas]
+
 v1.1
 ----
 

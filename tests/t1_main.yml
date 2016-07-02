@@ -1,5 +1,5 @@
 ---
-- name: Pre-Test Scenario 1.0 - initialize docker containers
+- name: Pre-Test Scenario 1.0 - Initialize Docker containers
   hosts: localhost
   roles:
     - role: 'provision_docker'
@@ -13,7 +13,7 @@
           volumes:
             - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
   post_tasks:
-    - name: Wait for SSH connection to docker containers
+    - name: Wait for SSH connection to Docker containers
       wait_for:
         host: '{{ hostvars[item.name]["ansible_ssh_host"] }}'
         port: 22
@@ -22,11 +22,11 @@
       with_items: '{{ provision_docker__inventory }}'
   tags: [ 'initialize-docker' ]
 
-- name: Test Scenario 1.1 - basic functionality
+- name: Test Scenario 1.1 - Basic role functionality
   hosts: provision_docker__containers
   remote_user: 'root'
   pre_tasks:
-    - name: Pre-Test - create test groups
+    - name: Pre-Test - Create test groups
       group:
         name: '{{ item }}'
         state: 'present'
@@ -38,20 +38,20 @@
         - 's1_homegroup'
       changed_when: False
       tags: [ 'pre-test' ]
-    - name: Pre-Test - create "remove me" user
+    - name: Pre-Test - Create "remove me" user
       user:
         name: 's1_removeme'
         state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
-    - name: Pre-Test - create homeowner user
+    - name: Pre-Test - Create "home owner" user
       user:
         name: 's1_homeowner'
         state: 'present'
       changed_when: False
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - verify ansible dedicated user presence
+    - name: Acceptance Test - Verify ansible dedicated user presence
       user:
         name: 's1_ansible'
         uid: 2100
@@ -59,14 +59,14 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify simple user presence
+    - name: Acceptance Test - Verify simple user presence
       user:
         name: 's1_simple'
         state: 'present'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify advanced user presence
+    - name: Acceptance Test - Verify advanced user presence
       user:
         name: 's1_advanced'
         comment: 'comment'
@@ -82,7 +82,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify system user presence
+    - name: Acceptance Test - Verify system user presence
       user:
         name: 's1_system'
         system: 'yes'
@@ -90,28 +90,28 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify disabled user absence
+    - name: Acceptance Test - Verify disabled user absence
       user:
         name: 's1_disabled'
         state: 'absent'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify "remove me" user absence
+    - name: Acceptance Test - Verify "remove me" user absence
       user:
         name: 's1_removeme'
         state: 'absent'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify not disabled user presence
+    - name: Acceptance Test - Verify "not disabled" user presence
       user:
         name: 's1_notdisabled'
         state: 'present'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify root user is not changed
+    - name: Acceptance Test - Verify root user was not changed
       user:
         name: 'root'
         uid: 0
@@ -120,7 +120,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify homedir user presence
+    - name: Acceptance Test - Verify homedir user presence
       user:
         name: 's1_homedir'
         home: '/opt/homedir'
@@ -128,7 +128,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - verify homedir user home directory presence
+    - name: Acceptance Test - Verify homedir user home directory presence
       file:
         path: '/opt/homedir'
         owner: 's1_homeowner'

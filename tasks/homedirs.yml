@@ -1,5 +1,5 @@
 ---
-- name: Manage system users home directories
+- name: Configure - Create, and update system users home directories
   file:
     path: '{{ item.home|default("~" + item.name) }}'
     owner: '{{ item.home_owner|default(omit) }}'
