@@ -15,3 +15,4 @@
          ((item.home_owner is defined and item.home_owner|trim) or
           (item.home_group is defined and item.home_group|trim) or
           (item.home_mode is defined and item.home_mode|trim)))
+  tags: [ 'configure' ]

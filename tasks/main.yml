@@ -27,6 +27,7 @@
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
   when: (item.name is defined and item.name|trim and item.name != 'root')
+  tags: [ 'configure' ]
 
 - include: 'homedirs.yml'
 - include: 'groups.yml'

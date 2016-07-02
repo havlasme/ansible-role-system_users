@@ -3,6 +3,7 @@
   shell: 'getent group|cut -f1 -d:'
   register: 'system_users__register_system_groups'
   changed_when: False
+  tags: [ 'configure' ]
 
 - name: Manage users default groups
   user:
@@ -16,6 +17,7 @@
   when: ((item.name is defined and item.name|trim and item.name != 'root') and
          (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is undefined))
+  tags: [ 'configure' ]
 
 - name: Manage users groups
   user:
@@ -29,3 +31,4 @@
   when: ((item.name is defined and item.name|trim and item.name != 'root') and
          (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is defined))
+  tags: [ 'configure' ]
