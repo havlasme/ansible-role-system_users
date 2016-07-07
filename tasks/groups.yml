@@ -9,14 +9,17 @@
   user:
     name: '{{ item.name }}'
     append: '{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary("yes", "no") }}'
-    groups: '{{ item.groups|union((item.append is defined and item.append|bool)|ternary(system_users__default_groups_list, []))|intersect(system_users__register_system_groups.stdout_lines)|join(",")  }}'
+    groups: '{{ item.groups
+                  |union((item.append is defined and item.append|bool)|ternary(system_users__default_groups_list, []))
+                  |intersect(system_users__register_system_groups.stdout_lines)
+                  |join(",")  }}'
     state: 'present'
   with_flattened:
     - '{{ system_users__ansible }}'
     - '{{ system_users__list }}'
   when: ((item.name is defined and item.name|trim and item.name != 'root') and
          (item.disabled is undefined or not item.disabled|bool) and
-         (item.groups is defined))
+         (item.groups is defined and item.groups is sequence and item.groups is not string))
   tags: [ 'configure' ]
 
 - name: Configure - Update users groups with default groups
