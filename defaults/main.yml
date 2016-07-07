@@ -1,7 +1,4 @@
 ---
-# separate user specification for ansible needs (matches system users specification)
-system_users__ansible: []
-
 # list of system users
 system_users__list: []
 ## user name
@@ -58,6 +55,9 @@ system_users__list: []
 #    ssh_key_type: string
 ## OPTIONAL: if set to True, user is removed from host
 #    disabled: bool
+
+# separate user specification for ansible needs (matches system users specification)
+system_users__ansible: []
 
 # list of default groups for all users managed by role
 # to ignore these for selected user, that must have set option "append" to "no" in it's specification
