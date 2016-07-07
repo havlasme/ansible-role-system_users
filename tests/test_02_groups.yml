@@ -4,11 +4,11 @@
   roles:
     - role: 'provision_docker'
       provision_docker__inventory:
-        - name: 'test_system_users_t2_centos7'
+        - name: 'test_system_users_02_centos7'
           image: 'tomashavlas/ansible-test:centos7'
           volumes:
             - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-        - name: 'test_system_users_t2_debian8'
+        - name: 'test_system_users_02_debian8'
           image: 'tomashavlas/ansible-test:debian8'
           volumes:
             - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
@@ -59,7 +59,7 @@
       changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - Verify system user with appended groups
+    - name: Acceptance Test - Verify appending groups with list of group
       user:
         name: 's1_user1'
         groups: 's1_group1,s1_group2,s1_group5,s1_group6'
@@ -67,7 +67,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced groups
+    - name: Acceptance Test - Verify replacing groups with list of groups
       user:
         name: 's1_user2'
         groups: 's1_group1,s1_group2'
@@ -75,7 +75,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with appended empty groups
+    - name: Acceptance Test - Verify appending groups with empty list
       user:
         name: 's1_user3'
         groups: 's1_group5,s1_group6'
@@ -83,7 +83,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced empty groups
+    - name: Acceptance Test - Verify replacing groups with empty list
       user:
         name: 's1_user4'
         groups: ''
@@ -91,7 +91,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with only default groups
+    - name: Acceptance Test - Verify user with default groups only
       user:
         name: 's1_user5'
         groups: ''
@@ -114,15 +114,15 @@
           groups:
             - 's1_group1'
             - 's1_group2'
-# test appending groups with empty groups
+# test appending groups with empty list
         - name: 's1_user3'
           append: true
           groups: []
-# test replacing groups with empty groups
+# test replacing groups with empty list
         - name: 's1_user4'
           append: false
           groups: []
-# test only with default groups
+# test user with default groups only
         - name: 's1_user5'
       system_users__default_groups_list: []
       system_users__default_groups_append: true
@@ -164,7 +164,7 @@
       changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - Verify system user with appended groups
+    - name: Acceptance Test - Verify appending groups with list of groups
       user:
         name: 's2_user1'
         groups: 's2_group1,s2_group2'
@@ -172,7 +172,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced groups
+    - name: Acceptance Test - Verify replacing groups with list of groups
       user:
         name: 's2_user2'
         groups: 's2_group1,s2_group2'
@@ -180,7 +180,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with appended empty groups
+    - name: Acceptance Test - Verify appending groups with empty list
       user:
         name: 's2_user3'
         groups: ''
@@ -188,7 +188,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced empty groups
+    - name: Acceptance Test - Verify replacing groups with empty list
       user:
         name: 's2_user4'
         groups: ''
@@ -196,7 +196,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with only default groups
+    - name: Acceptance Test - Verify user with default groups only
       user:
         name: 's2_user5'
         groups: ''
@@ -219,15 +219,15 @@
           groups:
             - 's2_group1'
             - 's2_group2'
-# test appending groups with empty groups
+# test appending groups with empty list
         - name: 's2_user3'
           append: true
           groups: []
-# test replacing groups with empty groups
+# test replacing groups with empty list
         - name: 's2_user4'
           append: false
           groups: []
-# test only with default groups
+# test user with default groups only
         - name: 's2_user5'
       system_users__default_groups_list: []
       system_users__default_groups_append: false
@@ -269,7 +269,7 @@
       changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - Verify system user with appended groups
+    - name: Acceptance Test - Verify appending groups with list of groups
       user:
         name: 's3_user1'
         groups: 's3_group1,s3_group2,s3_group3,s3_group4,s3_group5,s3_group6'
@@ -277,7 +277,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced groups
+    - name: Acceptance Test - Verify replacing groups with list of groups
       user:
         name: 's3_user2'
         groups: 's3_group1,s3_group2'
@@ -285,7 +285,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with appended empty groups
+    - name: Acceptance Test - Verify appending groups with empty list
       user:
         name: 's3_user3'
         groups: 's3_group3,s3_group4,s3_group5,s3_group6'
@@ -293,7 +293,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced empty groups
+    - name: Acceptance Test - Verify replacing groups with empty list
       user:
         name: 's3_user4'
         groups: ''
@@ -301,7 +301,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with only default groups
+    - name: Acceptance Test - Verify user with default groups only
       user:
         name: 's3_user5'
         groups: 's3_group3,s3_group4'
@@ -324,15 +324,15 @@
           groups:
             - 's3_group1'
             - 's3_group2'
-# test appending groups with empty groups
+# test appending groups with empty list
         - name: 's3_user3'
           append: true
           groups: []
-# test replacing groups with empty groups
+# test replacing groups with empty list
         - name: 's3_user4'
           append: false
           groups: []
-# test only with default groups
+# test user with default groups only
         - name: 's3_user5'
       system_users__default_groups_list:
         - 's3_group3'
@@ -376,7 +376,7 @@
       changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - Verify system user with appended groups
+    - name: Acceptance Test - Verify appending groups with list of groups
       user:
         name: 's4_user1'
         groups: 's4_group1,s4_group2,s4_group3,s4_group4'
@@ -384,7 +384,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced groups
+    - name: Acceptance Test - Verify replacing groups with list of groups
       user:
         name: 's4_user2'
         groups: 's4_group1,s4_group2'
@@ -392,7 +392,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with appended empty groups
+    - name: Acceptance Test - Verify appending groups with empty list
       user:
         name: 's4_user3'
         groups: 's4_group3,s4_group4'
@@ -400,7 +400,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with replaced empty groups
+    - name: Acceptance Test - Verify replacing groups with empty list
       user:
         name: 's4_user4'
         groups: ''
@@ -408,7 +408,7 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user with only default groups
+    - name: Acceptance Test - Verify user with default groups only
       user:
         name: 's4_user5'
         groups: 's4_group3,s4_group4'
@@ -431,22 +431,22 @@
           groups:
             - 's4_group1'
             - 's4_group2'
-# test appending groups with empty groups
+# test appending groups with empty list
         - name: 's4_user3'
           append: true
           groups: []
-# test replacing groups with empty groups
+# test replacing groups with empty list
         - name: 's4_user4'
           append: false
           groups: []
-# test only with default groups
+# test user with default groups only
         - name: 's4_user5'
       system_users__default_groups_list:
         - 's4_group3'
         - 's4_group4'
       system_users__default_groups_append: false
 
-- name: Test Scenario 2.5 - Non-existing system groups
+- name: Test Scenario 2.5 - Append non-existent groups
   hosts: provision_docker__containers
   remote_user: 'root'
   pre_tasks:
@@ -468,7 +468,7 @@
       changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - Verify system user groups
+    - name: Acceptance Test - Verify appending groups with list of non-existent groups
       user:
         name: 's5_user1'
         groups: 's5_group1,s5_group2'
@@ -479,7 +479,7 @@
   roles:
     - role: 'system_users'
       system_users__list:
-# test appending groups with list of groups
+# test appending groups with list of non-existent groups
         - name: 's5_user1'
           append: true
           groups:

@@ -4,11 +4,11 @@
   roles:
     - role: 'provision_docker'
       provision_docker__inventory:
-        - name: 'test_system_users_t1_centos7'
+        - name: 'test_system_users_01_centos7'
           image: 'tomashavlas/ansible-test:centos7'
           volumes:
             - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-        - name: 'test_system_users_t1_debian8'
+        - name: 'test_system_users_01_debian8'
           image: 'tomashavlas/ansible-test:debian8'
           volumes:
             - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
@@ -31,87 +31,101 @@
         name: '{{ item }}'
         state: 'present'
       with_items:
+        - 's1_homegroup'
         - 's1_group1'
         - 's1_group2'
         - 's1_group3'
         - 's1_group4'
-        - 's1_homegroup'
       changed_when: false
       tags: [ 'pre-test' ]
-    - name: Pre-Test - Create "remove me" user
+    - name: Pre-Test - Create test users
       user:
-        name: 's1_removeme'
+        name: '{{ item }}'
         state: 'present'
+      with_items:
+        - 's1_homeowner'
+        - 's1_user5'
       changed_when: false
       tags: [ 'pre-test' ]
-    - name: Pre-Test - Create "home owner" user
-      user:
-        name: 's1_homeowner'
-        state: 'present'
-      changed_when: false
+    - name: Pre-Test - Create alternative home directory at /opt
+      file:
+        path: '/opt/home'
+        state: 'directory'
+      changed_when: False
       tags: [ 'pre-test' ]
   post_tasks:
-    - name: Acceptance Test - Verify ansible dedicated user presence
+    - name: Acceptance Test - Verify Ansible dedicated user
       user:
         name: 's1_ansible'
         uid: 2100
-        state: 'present'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify simple user presence
+    - name: Acceptance Test - Verify minimal user
       user:
-        name: 's1_simple'
-        state: 'present'
+        name: 's1_user1'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify advanced user presence
+    - name: Acceptance Test - Verify complete user (1 / 2)
       user:
-        name: 's1_advanced'
+        name: 's1_user2'
         comment: 'comment'
         createhome: true
+        generate_ssh_key: true
         group: 's1_group1'
         groups: 's1_group2,s1_group3,s1_group4'
-        home: '/opt/testadv'
+        home: '/opt/home/s1_user2'
         password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
         shell: '/bin/sh'
         system: false
+        ssh_key_bits: 4096
+        ssh_key_comment: 's1_user2@ansible-test'
+        ssh_key_file: '.ssh/id_rsa4096'
+        ssh_key_type: 'rsa'
+        uid: 2201
         update_password: 'always'
-        state: 'present'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify system user presence
+    - name: Acceptance Test - Verify complete user (2 / 2)
+      file:
+        path: '/opt/home/s1_user2'
+        owner: 's1_homeowner'
+        group: 's1_homegroup'
+        mode: '0750'
+        state: 'directory'
+      register: 'test_result'
+      failed_when: (test_result|failed or test_result|changed)
+      tags: [ 'acceptance-test' ]
+    - name: Acceptance Test - Verify system user
       user:
-        name: 's1_system'
+        name: 's1_user3'
         system: true
-        state: 'present'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify disabled user absence
+    - name: Acceptance Test - Verify disaled user (1 / 2)
       user:
-        name: 's1_disabled'
+        name: 's1_user4'
         state: 'absent'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify "remove me" user absence
+    - name: Acceptance Test - Verify disabled user (2 / 2)
       user:
-        name: 's1_removeme'
+        name: 's1_user5'
         state: 'absent'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify "not disabled" user presence
+    - name: Acceptance Test - Verify not disabled user
       user:
-        name: 's1_notdisabled'
-        state: 'present'
+        name: 's1_user6'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify root user was not changed
+    - name: Acceptance Test - Verify root user
       user:
         name: 'root'
         uid: 0
@@ -120,71 +134,50 @@
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify homedir user presence
-      user:
-        name: 's1_homedir'
-        home: '/opt/homedir'
-        state: 'present'
-      register: 'test_result'
-      failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
-    - name: Acceptance Test - Verify homedir user home directory presence
-      file:
-        path: '/opt/homedir'
-        owner: 's1_homeowner'
-        group: 's1_homegroup'
-        mode: '0750'
-        state: 'directory'
-      register: 'test_result'
-      failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
   roles:
     - role: 'system_users'
-# test ansible dedicated user
+# test Ansible dedicated user
       system_users__ansible:
         - name: 's1_ansible'
           uid: 2100
       system_users__list:
-# test simple user
-        - name: 's1_simple'
-# test advanced user
-        - name: 's1_advanced'
+# test minimal user
+        - name: 's1_user1'
+# test complete user
+        - name: 's1_user2'
           comment: 'comment'
           createhome: true
+          generate_ssh_key: true
           group: 's1_group1'
           groups:
             - 's1_group2'
             - 's1_group3'
             - 's1_group4'
-          home: '/opt/testadv'
+          home: '/opt/home/s1_user2'
+          home_owner: 's1_homeowner'
+          home_group: 's1_homegroup'
+          home_mode: '0750'
           password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
           shell: '/bin/sh'
-          system: false
-          generate_ssh_key: true
           ssh_key_bits: 4096
-          ssh_key_comment: 'test_ssh_key'
+          ssh_key_comment: 's1_user2@ansible-test'
           ssh_key_file: '.ssh/id_rsa4096'
           ssh_key_type: 'rsa'
+          system: false
+          uid: 2201
 # test system user
-        - name: 's1_system'
+        - name: 's1_user3'
           system: true
 # test disabled user
-        - name: 's1_disabled'
+        - name: 's1_user4'
           disabled: true
-        - name: 's1_removeme'
+        - name: 's1_user5'
           remove: true
           disabled: true
 # test not disabled user
-        - name: 's1_notdisabled'
+        - name: 's1_user6'
           disabled: false
 # test root user
         - name: 'root'
           uid: 1500
           home: '/opt/root'
-# test home directory creation
-        - name: 's1_homedir'
-          createhome: true
-          home: '/opt/homedir'
-          home_owner: 's1_homeowner'
-          home_group: 's1_homegroup'
-          home_mode: '0750'
