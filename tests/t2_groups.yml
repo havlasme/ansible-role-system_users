@@ -37,7 +37,7 @@
         - 's1_group4'
         - 's1_group5'
         - 's1_group6'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test users
       user:
@@ -49,14 +49,14 @@
         - 's1_user2'
         - 's1_user3'
         - 's1_user4'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test user with no groups
       user:
         name: 's1_user5'
         groups: ''
         state: 'present'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify system user with appended groups
@@ -104,28 +104,28 @@
       system_users__list:
 # test appending groups with list of groups
         - name: 's1_user1'
-          append: 'yes'
+          append: true
           groups:
             - 's1_group1'
             - 's1_group2'
 # test replacing groups with list of groups
         - name: 's1_user2'
-          append: 'no'
+          append: false
           groups:
             - 's1_group1'
             - 's1_group2'
 # test appending groups with empty groups
         - name: 's1_user3'
-          append: 'yes'
+          append: true
           groups: []
 # test replacing groups with empty groups
         - name: 's1_user4'
-          append: 'no'
+          append: false
           groups: []
 # test only with default groups
         - name: 's1_user5'
       system_users__default_groups_list: []
-      system_users__default_groups_append: True
+      system_users__default_groups_append: true
 
 - name: Test Scenario 2.2 - Replace users groups with empty default groups
   hosts: provision_docker__containers
@@ -142,7 +142,7 @@
         - 's2_group4'
         - 's2_group5'
         - 's2_group6'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test users
       user:
@@ -154,14 +154,14 @@
         - 's2_user2'
         - 's2_user3'
         - 's2_user4'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test user with no groups
       user:
         name: 's2_user5'
         groups: ''
         state: 'present'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify system user with appended groups
@@ -209,28 +209,28 @@
       system_users__list:
 # test appending groups with list of groups
         - name: 's2_user1'
-          append: 'yes'
+          append: true
           groups:
             - 's2_group1'
             - 's2_group2'
 # test replacing groups with list of groups
         - name: 's2_user2'
-          append: 'no'
+          append: false
           groups:
             - 's2_group1'
             - 's2_group2'
 # test appending groups with empty groups
         - name: 's2_user3'
-          append: 'yes'
+          append: true
           groups: []
 # test replacing groups with empty groups
         - name: 's2_user4'
-          append: 'no'
+          append: false
           groups: []
 # test only with default groups
         - name: 's2_user5'
       system_users__default_groups_list: []
-      system_users__default_groups_append: False
+      system_users__default_groups_append: false
 
 - name: Test Scenario 2.3 - Append default groups to users groups
   hosts: provision_docker__containers
@@ -247,7 +247,7 @@
         - 's3_group4'
         - 's3_group5'
         - 's3_group6'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test users
       user:
@@ -259,14 +259,14 @@
         - 's3_user2'
         - 's3_user3'
         - 's3_user4'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test user with no groups
       user:
         name: 's3_user5'
         groups: ''
         state: 'present'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify system user with appended groups
@@ -314,30 +314,30 @@
       system_users__list:
 # test appending groups with list of groups
         - name: 's3_user1'
-          append: 'yes'
+          append: true
           groups:
             - 's3_group1'
             - 's3_group2'
 # test replacing groups with list of groups
         - name: 's3_user2'
-          append: 'no'
+          append: false
           groups:
             - 's3_group1'
             - 's3_group2'
 # test appending groups with empty groups
         - name: 's3_user3'
-          append: 'yes'
+          append: true
           groups: []
 # test replacing groups with empty groups
         - name: 's3_user4'
-          append: 'no'
+          append: false
           groups: []
 # test only with default groups
         - name: 's3_user5'
       system_users__default_groups_list:
         - 's3_group3'
         - 's3_group4'
-      system_users__default_groups_append: True
+      system_users__default_groups_append: true
 
 - name: Test Scenario 2.4 - Replace users groups with default groups
   hosts: provision_docker__containers
@@ -354,7 +354,7 @@
         - 's4_group4'
         - 's4_group5'
         - 's4_group6'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test users
       user:
@@ -366,14 +366,14 @@
         - 's4_user2'
         - 's4_user3'
         - 's4_user4'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test user with no groups
       user:
         name: 's4_user5'
         groups: ''
         state: 'present'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify system user with appended groups
@@ -421,30 +421,30 @@
       system_users__list:
 # test appending groups with list of groups
         - name: 's4_user1'
-          append: 'yes'
+          append: true
           groups:
             - 's4_group1'
             - 's4_group2'
 # test replacing groups with list of groups
         - name: 's4_user2'
-          append: 'no'
+          append: false
           groups:
             - 's4_group1'
             - 's4_group2'
 # test appending groups with empty groups
         - name: 's4_user3'
-          append: 'yes'
+          append: true
           groups: []
 # test replacing groups with empty groups
         - name: 's4_user4'
-          append: 'no'
+          append: false
           groups: []
 # test only with default groups
         - name: 's4_user5'
       system_users__default_groups_list:
         - 's4_group3'
         - 's4_group4'
-      system_users__default_groups_append: False
+      system_users__default_groups_append: false
 
 - name: Test Scenario 2.5 - Non-existing system groups
   hosts: provision_docker__containers
@@ -457,7 +457,7 @@
       with_items:
         - 's5_group1'
         - 's5_group2'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create test users
       user:
@@ -465,7 +465,7 @@
         state: 'present'
       with_items:
         - 's5_user1'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify system user groups
@@ -481,11 +481,11 @@
       system_users__list:
 # test appending groups with list of groups
         - name: 's5_user1'
-          append: 'yes'
+          append: true
           groups:
             - 's5_group1'
             - 's5_group3'
       system_users__default_groups_list:
         - 's5_group2'
         - 's5_group4'
-      system_users__default_groups_append: True
+      system_users__default_groups_append: true

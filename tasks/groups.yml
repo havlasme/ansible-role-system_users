@@ -2,13 +2,13 @@
 - name: Configure - Create list of available system groups
   shell: 'getent group|cut -f1 -d:'
   register: 'system_users__register_system_groups'
-  changed_when: False
+  changed_when: false
   tags: [ 'configure' ]
 
 - name: Configure - Update users groups
   user:
     name: '{{ item.name }}'
-    append: '{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary("yes", "no") }}'
+    append: '{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary(true, false) }}'
     groups: '{{ item.groups
                   |union((item.append is defined and item.append|bool)|ternary(system_users__default_groups_list, []))
                   |intersect(system_users__register_system_groups.stdout_lines)

@@ -36,19 +36,19 @@
         - 's1_group3'
         - 's1_group4'
         - 's1_homegroup'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create "remove me" user
       user:
         name: 's1_removeme'
         state: 'present'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
     - name: Pre-Test - Create "home owner" user
       user:
         name: 's1_homeowner'
         state: 'present'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify ansible dedicated user presence
@@ -70,13 +70,13 @@
       user:
         name: 's1_advanced'
         comment: 'comment'
-        createhome: 'yes'
+        createhome: true
         group: 's1_group1'
         groups: 's1_group2,s1_group3,s1_group4'
         home: '/opt/testadv'
         password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
         shell: '/bin/sh'
-        system: 'no'
+        system: false
         update_password: 'always'
         state: 'present'
       register: 'test_result'
@@ -85,7 +85,7 @@
     - name: Acceptance Test - Verify system user presence
       user:
         name: 's1_system'
-        system: 'yes'
+        system: true
         state: 'present'
       register: 'test_result'
       failed_when: (test_result|failed or test_result|changed)
@@ -150,7 +150,7 @@
 # test advanced user
         - name: 's1_advanced'
           comment: 'comment'
-          createhome: 'yes'
+          createhome: true
           group: 's1_group1'
           groups:
             - 's1_group2'
@@ -159,31 +159,31 @@
           home: '/opt/testadv'
           password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
           shell: '/bin/sh'
-          system: 'no'
-          generate_ssh_key: 'yes'
+          system: false
+          generate_ssh_key: true
           ssh_key_bits: 4096
           ssh_key_comment: 'test_ssh_key'
           ssh_key_file: '.ssh/id_rsa4096'
           ssh_key_type: 'rsa'
 # test system user
         - name: 's1_system'
-          system: 'yes'
+          system: true
 # test disabled user
         - name: 's1_disabled'
-          disabled: True
+          disabled: true
         - name: 's1_removeme'
-          remove: 'yes'
-          disabled: True
+          remove: true
+          disabled: true
 # test not disabled user
         - name: 's1_notdisabled'
-          disabled: False
+          disabled: false
 # test root user
         - name: 'root'
           uid: 1500
           home: '/opt/root'
 # test home directory creation
         - name: 's1_homedir'
-          createhome: 'yes'
+          createhome: true
           home: '/opt/homedir'
           home_owner: 's1_homeowner'
           home_group: 's1_homegroup'

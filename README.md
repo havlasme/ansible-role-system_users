@@ -75,15 +75,15 @@ system_users__list: []
 #    ssh_key_passphrase: string
 ## OPTIONAL: type of generated SSH key
 #    ssh_key_type: string
-## OPTIONAL: if set to True, user is removed from host
+## OPTIONAL: if set to true, user is removed from host
 #    disabled: bool
 
 # list of default groups for all users managed by role
-# to ignore these for selected user, that must have set option "append" to "no" in it's specification
+# to ignore these for selected user, that must have set option "append" to false in it's specification
 system_users__default_groups_list: []
 
 # should be default groups appended to potential existing user's group
-system_users__default_groups_append: True
+system_users__default_groups_append: true
 ```
 
 Dependencies
@@ -101,15 +101,15 @@ Example Playbook
       system_users__ansible:
         - name: 'ansible'
           uid: 1500
-          system: 'yes'
+          system: true
 
       system_users__list:
         - name: 'commonuser'
         - name: 'userhomedir'
-          createhome: 'yes'
+          createhome: true
           home_owner: 'userhomedir'
           home_mode: 0750
-          generate_ssh_key: 'yes'
+          generate_ssh_key: true
           ssh_key_bits: 4096
           ssh_key_comment: 'test_ssh_key'
 ```
