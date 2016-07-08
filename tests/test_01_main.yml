@@ -51,7 +51,7 @@
       file:
         path: '/opt/home'
         state: 'directory'
-      changed_when: False
+      changed_when: false
       tags: [ 'pre-test' ]
   post_tasks:
     - name: Acceptance Test - Verify Ansible dedicated user
