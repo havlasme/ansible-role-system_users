@@ -205,7 +205,7 @@
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
-    - role: 'system_users'
+    - role: 'tomashavlas.system_users'
       system_users__list:
 # test appending groups with list of groups
         - name: 's2_user1'
@@ -310,7 +310,7 @@
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
-    - role: 'system_users'
+    - role: 'tomashavlas.system_users'
       system_users__list:
 # test appending groups with list of groups
         - name: 's3_user1'
@@ -417,7 +417,7 @@
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
-    - role: 'system_users'
+    - role: 'tomashavlas.system_users'
       system_users__list:
 # test appending groups with list of groups
         - name: 's4_user1'
@@ -477,7 +477,7 @@
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
-    - role: 'system_users'
+    - role: 'tomashavlas.system_users'
       system_users__list:
 # test appending groups with list of non-existent groups
         - name: 's5_user1'
