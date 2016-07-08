@@ -2,5 +2,5 @@
 *.retry
 
 # dependency roles for tests
-tests/roles/
-!tests/roles/system_users
+tests/roles/*
+!tests/roles/tomashavlas.system_users

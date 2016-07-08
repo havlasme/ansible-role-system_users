@@ -2,7 +2,7 @@
 - name: Pre-Test Scenario 1.0 - Initialize Docker containers
   hosts: localhost
   roles:
-    - role: 'provision_docker'
+    - role: 'tomashavlas.provision_docker'
       provision_docker__inventory:
         - name: 'test_system_users_01_centos7'
           image: 'tomashavlas/ansible-test:centos7'
@@ -135,7 +135,7 @@
       failed_when: (test_result|failed or test_result|changed)
       tags: [ 'acceptance-test' ]
   roles:
-    - role: 'system_users'
+    - role: 'tomashavlas.system_users'
 # test Ansible dedicated user
       system_users__ansible:
         - name: 's1_ansible'

@@ -97,7 +97,7 @@ Example Playbook
 ```yaml
 - hosts: all
   roles:
-    - role: 'system_users'
+    - role: 'tomashavlas.system_users'
       system_users__ansible:
         - name: 'ansible'
           uid: 1500
