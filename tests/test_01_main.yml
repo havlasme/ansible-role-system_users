@@ -2,182 +2,182 @@
 - name: Pre-Test Scenario 1.0 - Initialize Docker containers
   hosts: localhost
   roles:
-    - role: 'tomashavlas.provision_docker'
+    - role: "tomashavlas.provision_docker"
       provision_docker__inventory:
-        - name: 'test_system_users_01_centos7'
-          image: 'tomashavlas/ansible-test:centos7'
+        - name: "test_system_users_01_centos7"
+          image: "tomashavlas/ansible-test:centos7"
           volumes:
-            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-        - name: 'test_system_users_01_debian8'
-          image: 'tomashavlas/ansible-test:debian8'
+            - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        - name: "test_system_users_01_debian8"
+          image: "tomashavlas/ansible-test:debian8"
           volumes:
-            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+            - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   post_tasks:
     - name: Wait for SSH connection to Docker containers
       wait_for:
-        host: '{{ hostvars[item.name]["ansible_ssh_host"] }}'
+        host: "{{ hostvars[item.name]['ansible_ssh_host'] }}"
         port: 22
         timeout: 30
         connect_timeout: 30
-      with_items: '{{ provision_docker__inventory }}'
-  tags: [ 'initialize-docker' ]
+      with_items: "{{ provision_docker__inventory }}"
+  tags: [ "initialize-docker" ]
 
 - name: Test Scenario 1.1 - Basic role functionality
   hosts: provision_docker__containers
-  remote_user: 'root'
+  remote_user: "root"
   pre_tasks:
     - name: Pre-Test - Create test groups
       group:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's1_homegroup'
-        - 's1_group1'
-        - 's1_group2'
-        - 's1_group3'
-        - 's1_group4'
+        - "s1_homegroup"
+        - "s1_group1"
+        - "s1_group2"
+        - "s1_group3"
+        - "s1_group4"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test users
       user:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's1_homeowner'
-        - 's1_user5'
+        - "s1_homeowner"
+        - "s1_user5"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create alternative home directory at /opt
       file:
-        path: '/opt/home'
-        state: 'directory'
+        path: "/opt/home"
+        state: "directory"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
   post_tasks:
     - name: Acceptance Test - Verify Ansible dedicated user
       user:
-        name: 's1_ansible'
+        name: "s1_ansible"
         uid: 2100
-      register: 'test_result'
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify minimal user
       user:
-        name: 's1_user1'
-      register: 'test_result'
+        name: "s1_user1"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify complete user (1 / 2)
       user:
-        name: 's1_user2'
-        comment: 'comment'
+        name: "s1_user2"
+        comment: "comment"
         createhome: true
         generate_ssh_key: true
-        group: 's1_group1'
-        groups: 's1_group2,s1_group3,s1_group4'
-        home: '/opt/home/s1_user2'
-        password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
-        shell: '/bin/sh'
+        group: "s1_group1"
+        groups: "s1_group2,s1_group3,s1_group4"
+        home: "/opt/home/s1_user2"
+        password: "$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/"
+        shell: "/bin/sh"
         system: false
         ssh_key_bits: 4096
-        ssh_key_comment: 's1_user2@ansible-test'
-        ssh_key_file: '.ssh/id_rsa4096'
-        ssh_key_type: 'rsa'
+        ssh_key_comment: "s1_user2@ansible-test"
+        ssh_key_file: ".ssh/id_rsa4096"
+        ssh_key_type: "rsa"
         uid: 2201
-        update_password: 'always'
-      register: 'test_result'
+        update_password: "always"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify complete user (2 / 2)
       file:
-        path: '/opt/home/s1_user2'
-        owner: 's1_homeowner'
-        group: 's1_homegroup'
-        mode: '0750'
-        state: 'directory'
-      register: 'test_result'
+        path: "/opt/home/s1_user2"
+        owner: "s1_homeowner"
+        group: "s1_homegroup"
+        mode: "0750"
+        state: "directory"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify system user
       user:
-        name: 's1_user3'
+        name: "s1_user3"
         system: true
-      register: 'test_result'
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify disaled user (1 / 2)
       user:
-        name: 's1_user4'
-        state: 'absent'
-      register: 'test_result'
+        name: "s1_user4"
+        state: "absent"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify disabled user (2 / 2)
       user:
-        name: 's1_user5'
-        state: 'absent'
-      register: 'test_result'
+        name: "s1_user5"
+        state: "absent"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify not disabled user
       user:
-        name: 's1_user6'
-      register: 'test_result'
+        name: "s1_user6"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify root user
       user:
-        name: 'root'
+        name: "root"
         uid: 0
-        home: '/root'
-        state: 'present'
-      register: 'test_result'
+        home: "/root"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
 # test Ansible dedicated user
       system_users__ansible:
-        - name: 's1_ansible'
+        - name: "s1_ansible"
           uid: 2100
       system_users__list:
 # test minimal user
-        - name: 's1_user1'
+        - name: "s1_user1"
 # test complete user
-        - name: 's1_user2'
-          comment: 'comment'
+        - name: "s1_user2"
+          comment: "comment"
           createhome: true
           generate_ssh_key: true
-          group: 's1_group1'
+          group: "s1_group1"
           groups:
-            - 's1_group2'
-            - 's1_group3'
-            - 's1_group4'
-          home: '/opt/home/s1_user2'
-          home_owner: 's1_homeowner'
-          home_group: 's1_homegroup'
-          home_mode: '0750'
-          password: '$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/'
-          shell: '/bin/sh'
+            - "s1_group2"
+            - "s1_group3"
+            - "s1_group4"
+          home: "/opt/home/s1_user2"
+          home_owner: "s1_homeowner"
+          home_group: "s1_homegroup"
+          home_mode: "0750"
+          password: "$6$rounds=100000$yPL.FSLbB5Qekkvb$L5Be8NDTZlkkD09737laWyNgpoikHNuVeuMnPJTtAYT5dRJCDT5PJnPZDZSuIXaGfSvuhudD85T42spTEyBIP/"
+          shell: "/bin/sh"
           ssh_key_bits: 4096
-          ssh_key_comment: 's1_user2@ansible-test'
-          ssh_key_file: '.ssh/id_rsa4096'
-          ssh_key_type: 'rsa'
+          ssh_key_comment: "s1_user2@ansible-test"
+          ssh_key_file: ".ssh/id_rsa4096"
+          ssh_key_type: "rsa"
           system: false
           uid: 2201
 # test system user
-        - name: 's1_user3'
+        - name: "s1_user3"
           system: true
 # test disabled user
-        - name: 's1_user4'
+        - name: "s1_user4"
           disabled: true
-        - name: 's1_user5'
+        - name: "s1_user5"
           remove: true
           disabled: true
 # test not disabled user
-        - name: 's1_user6'
+        - name: "s1_user6"
           disabled: false
 # test root user
-        - name: 'root'
+        - name: "root"
           uid: 1500
-          home: '/opt/root'
+          home: "/opt/root"

@@ -2,490 +2,490 @@
 - name: Pre-Test Scenario 2.0 - Initialize Docker containers
   hosts: localhost
   roles:
-    - role: 'tomashavlas.provision_docker'
+    - role: "tomashavlas.provision_docker"
       provision_docker__inventory:
-        - name: 'test_system_users_02_centos7'
-          image: 'tomashavlas/ansible-test:centos7'
+        - name: "test_system_users_02_centos7"
+          image: "tomashavlas/ansible-test:centos7"
           volumes:
-            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-        - name: 'test_system_users_02_debian8'
-          image: 'tomashavlas/ansible-test:debian8'
+            - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        - name: "test_system_users_02_debian8"
+          image: "tomashavlas/ansible-test:debian8"
           volumes:
-            - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+            - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   post_tasks:
     - name: Wait for SSH connection to Docker containers
       wait_for:
-        host: '{{ hostvars[item.name]["ansible_ssh_host"] }}'
+        host: "{{ hostvars[item.name]['ansible_ssh_host'] }}"
         port: 22
         timeout: 30
         connect_timeout: 30
-      with_items: '{{ provision_docker__inventory }}'
-  tags: [ 'initialize-docker' ]
+      with_items: "{{ provision_docker__inventory }}"
+  tags: [ "initialize-docker" ]
 
 - name: Test Scenario 2.1 - Append empty default groups to users groups
   hosts: provision_docker__containers
-  remote_user: 'root'
+  remote_user: "root"
   pre_tasks:
     - name: Pre-Test - Create test groups
       group:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's1_group1'
-        - 's1_group2'
-        - 's1_group3'
-        - 's1_group4'
-        - 's1_group5'
-        - 's1_group6'
+        - "s1_group1"
+        - "s1_group2"
+        - "s1_group3"
+        - "s1_group4"
+        - "s1_group5"
+        - "s1_group6"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test users
       user:
-        name: '{{ item }}'
-        groups: 's1_group5,s1_group6'
-        state: 'present'
+        name: "{{ item }}"
+        groups: "s1_group5,s1_group6"
+        state: "present"
       with_items:
-        - 's1_user1'
-        - 's1_user2'
-        - 's1_user3'
-        - 's1_user4'
+        - "s1_user1"
+        - "s1_user2"
+        - "s1_user3"
+        - "s1_user4"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test user with no groups
       user:
-        name: 's1_user5'
-        groups: ''
-        state: 'present'
+        name: "s1_user5"
+        groups: ""
+        state: "present"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
   post_tasks:
     - name: Acceptance Test - Verify appending groups with list of group
       user:
-        name: 's1_user1'
-        groups: 's1_group1,s1_group2,s1_group5,s1_group6'
-        state: 'present'
-      register: 'test_result'
+        name: "s1_user1"
+        groups: "s1_group1,s1_group2,s1_group5,s1_group6"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with list of groups
       user:
-        name: 's1_user2'
-        groups: 's1_group1,s1_group2'
-        state: 'present'
-      register: 'test_result'
+        name: "s1_user2"
+        groups: "s1_group1,s1_group2"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify appending groups with empty list
       user:
-        name: 's1_user3'
-        groups: 's1_group5,s1_group6'
-        state: 'present'
-      register: 'test_result'
+        name: "s1_user3"
+        groups: "s1_group5,s1_group6"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with empty list
       user:
-        name: 's1_user4'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s1_user4"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify user with default groups only
       user:
-        name: 's1_user5'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s1_user5"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
       system_users__list:
 # test appending groups with list of groups
-        - name: 's1_user1'
+        - name: "s1_user1"
           append: true
           groups:
-            - 's1_group1'
-            - 's1_group2'
+            - "s1_group1"
+            - "s1_group2"
 # test replacing groups with list of groups
-        - name: 's1_user2'
+        - name: "s1_user2"
           append: false
           groups:
-            - 's1_group1'
-            - 's1_group2'
+            - "s1_group1"
+            - "s1_group2"
 # test appending groups with empty list
-        - name: 's1_user3'
+        - name: "s1_user3"
           append: true
           groups: []
 # test replacing groups with empty list
-        - name: 's1_user4'
+        - name: "s1_user4"
           append: false
           groups: []
 # test user with default groups only
-        - name: 's1_user5'
+        - name: "s1_user5"
       system_users__default_groups_list: []
       system_users__default_groups_append: true
 
 - name: Test Scenario 2.2 - Replace users groups with empty default groups
   hosts: provision_docker__containers
-  remote_user: 'root'
+  remote_user: "root"
   pre_tasks:
     - name: Pre-Test - Create test groups
       group:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's2_group1'
-        - 's2_group2'
-        - 's2_group3'
-        - 's2_group4'
-        - 's2_group5'
-        - 's2_group6'
+        - "s2_group1"
+        - "s2_group2"
+        - "s2_group3"
+        - "s2_group4"
+        - "s2_group5"
+        - "s2_group6"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test users
       user:
-        name: '{{ item }}'
-        groups: 's2_group5,s2_group6'
-        state: 'present'
+        name: "{{ item }}"
+        groups: "s2_group5,s2_group6"
+        state: "present"
       with_items:
-        - 's2_user1'
-        - 's2_user2'
-        - 's2_user3'
-        - 's2_user4'
+        - "s2_user1"
+        - "s2_user2"
+        - "s2_user3"
+        - "s2_user4"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test user with no groups
       user:
-        name: 's2_user5'
-        groups: ''
-        state: 'present'
+        name: "s2_user5"
+        groups: ""
+        state: "present"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
   post_tasks:
     - name: Acceptance Test - Verify appending groups with list of groups
       user:
-        name: 's2_user1'
-        groups: 's2_group1,s2_group2'
-        state: 'present'
-      register: 'test_result'
+        name: "s2_user1"
+        groups: "s2_group1,s2_group2"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with list of groups
       user:
-        name: 's2_user2'
-        groups: 's2_group1,s2_group2'
-        state: 'present'
-      register: 'test_result'
+        name: "s2_user2"
+        groups: "s2_group1,s2_group2"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify appending groups with empty list
       user:
-        name: 's2_user3'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s2_user3"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with empty list
       user:
-        name: 's2_user4'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s2_user4"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify user with default groups only
       user:
-        name: 's2_user5'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s2_user5"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
       system_users__list:
 # test appending groups with list of groups
-        - name: 's2_user1'
+        - name: "s2_user1"
           append: true
           groups:
-            - 's2_group1'
-            - 's2_group2'
+            - "s2_group1"
+            - "s2_group2"
 # test replacing groups with list of groups
-        - name: 's2_user2'
+        - name: "s2_user2"
           append: false
           groups:
-            - 's2_group1'
-            - 's2_group2'
+            - "s2_group1"
+            - "s2_group2"
 # test appending groups with empty list
-        - name: 's2_user3'
+        - name: "s2_user3"
           append: true
           groups: []
 # test replacing groups with empty list
-        - name: 's2_user4'
+        - name: "s2_user4"
           append: false
           groups: []
 # test user with default groups only
-        - name: 's2_user5'
+        - name: "s2_user5"
       system_users__default_groups_list: []
       system_users__default_groups_append: false
 
 - name: Test Scenario 2.3 - Append default groups to users groups
   hosts: provision_docker__containers
-  remote_user: 'root'
+  remote_user: "root"
   pre_tasks:
     - name: Pre-Test - Create test groups
       group:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's3_group1'
-        - 's3_group2'
-        - 's3_group3'
-        - 's3_group4'
-        - 's3_group5'
-        - 's3_group6'
+        - "s3_group1"
+        - "s3_group2"
+        - "s3_group3"
+        - "s3_group4"
+        - "s3_group5"
+        - "s3_group6"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test users
       user:
-        name: '{{ item }}'
-        groups: 's3_group5,s3_group6'
-        state: 'present'
+        name: "{{ item }}"
+        groups: "s3_group5,s3_group6"
+        state: "present"
       with_items:
-        - 's3_user1'
-        - 's3_user2'
-        - 's3_user3'
-        - 's3_user4'
+        - "s3_user1"
+        - "s3_user2"
+        - "s3_user3"
+        - "s3_user4"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test user with no groups
       user:
-        name: 's3_user5'
-        groups: ''
-        state: 'present'
+        name: "s3_user5"
+        groups: ""
+        state: "present"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
   post_tasks:
     - name: Acceptance Test - Verify appending groups with list of groups
       user:
-        name: 's3_user1'
-        groups: 's3_group1,s3_group2,s3_group3,s3_group4,s3_group5,s3_group6'
-        state: 'present'
-      register: 'test_result'
+        name: "s3_user1"
+        groups: "s3_group1,s3_group2,s3_group3,s3_group4,s3_group5,s3_group6"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with list of groups
       user:
-        name: 's3_user2'
-        groups: 's3_group1,s3_group2'
-        state: 'present'
-      register: 'test_result'
+        name: "s3_user2"
+        groups: "s3_group1,s3_group2"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify appending groups with empty list
       user:
-        name: 's3_user3'
-        groups: 's3_group3,s3_group4,s3_group5,s3_group6'
-        state: 'present'
-      register: 'test_result'
+        name: "s3_user3"
+        groups: "s3_group3,s3_group4,s3_group5,s3_group6"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with empty list
       user:
-        name: 's3_user4'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s3_user4"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify user with default groups only
       user:
-        name: 's3_user5'
-        groups: 's3_group3,s3_group4'
-        state: 'present'
-      register: 'test_result'
+        name: "s3_user5"
+        groups: "s3_group3,s3_group4"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
       system_users__list:
 # test appending groups with list of groups
-        - name: 's3_user1'
+        - name: "s3_user1"
           append: true
           groups:
-            - 's3_group1'
-            - 's3_group2'
+            - "s3_group1"
+            - "s3_group2"
 # test replacing groups with list of groups
-        - name: 's3_user2'
+        - name: "s3_user2"
           append: false
           groups:
-            - 's3_group1'
-            - 's3_group2'
+            - "s3_group1"
+            - "s3_group2"
 # test appending groups with empty list
-        - name: 's3_user3'
+        - name: "s3_user3"
           append: true
           groups: []
 # test replacing groups with empty list
-        - name: 's3_user4'
+        - name: "s3_user4"
           append: false
           groups: []
 # test user with default groups only
-        - name: 's3_user5'
+        - name: "s3_user5"
       system_users__default_groups_list:
-        - 's3_group3'
-        - 's3_group4'
+        - "s3_group3"
+        - "s3_group4"
       system_users__default_groups_append: true
 
 - name: Test Scenario 2.4 - Replace users groups with default groups
   hosts: provision_docker__containers
-  remote_user: 'root'
+  remote_user: "root"
   pre_tasks:
     - name: Pre-Test - Create test groups
       group:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's4_group1'
-        - 's4_group2'
-        - 's4_group3'
-        - 's4_group4'
-        - 's4_group5'
-        - 's4_group6'
+        - "s4_group1"
+        - "s4_group2"
+        - "s4_group3"
+        - "s4_group4"
+        - "s4_group5"
+        - "s4_group6"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test users
       user:
-        name: '{{ item }}'
-        groups: 's4_group5,s4_group6'
-        state: 'present'
+        name: "{{ item }}"
+        groups: "s4_group5,s4_group6"
+        state: "present"
       with_items:
-        - 's4_user1'
-        - 's4_user2'
-        - 's4_user3'
-        - 's4_user4'
+        - "s4_user1"
+        - "s4_user2"
+        - "s4_user3"
+        - "s4_user4"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test user with no groups
       user:
-        name: 's4_user5'
-        groups: ''
-        state: 'present'
+        name: "s4_user5"
+        groups: ""
+        state: "present"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
   post_tasks:
     - name: Acceptance Test - Verify appending groups with list of groups
       user:
-        name: 's4_user1'
-        groups: 's4_group1,s4_group2,s4_group3,s4_group4'
-        state: 'present'
-      register: 'test_result'
+        name: "s4_user1"
+        groups: "s4_group1,s4_group2,s4_group3,s4_group4"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with list of groups
       user:
-        name: 's4_user2'
-        groups: 's4_group1,s4_group2'
-        state: 'present'
-      register: 'test_result'
+        name: "s4_user2"
+        groups: "s4_group1,s4_group2"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify appending groups with empty list
       user:
-        name: 's4_user3'
-        groups: 's4_group3,s4_group4'
-        state: 'present'
-      register: 'test_result'
+        name: "s4_user3"
+        groups: "s4_group3,s4_group4"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify replacing groups with empty list
       user:
-        name: 's4_user4'
-        groups: ''
-        state: 'present'
-      register: 'test_result'
+        name: "s4_user4"
+        groups: ""
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
     - name: Acceptance Test - Verify user with default groups only
       user:
-        name: 's4_user5'
-        groups: 's4_group3,s4_group4'
-        state: 'present'
-      register: 'test_result'
+        name: "s4_user5"
+        groups: "s4_group3,s4_group4"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
       system_users__list:
 # test appending groups with list of groups
-        - name: 's4_user1'
+        - name: "s4_user1"
           append: true
           groups:
-            - 's4_group1'
-            - 's4_group2'
+            - "s4_group1"
+            - "s4_group2"
 # test replacing groups with list of groups
-        - name: 's4_user2'
+        - name: "s4_user2"
           append: false
           groups:
-            - 's4_group1'
-            - 's4_group2'
+            - "s4_group1"
+            - "s4_group2"
 # test appending groups with empty list
-        - name: 's4_user3'
+        - name: "s4_user3"
           append: true
           groups: []
 # test replacing groups with empty list
-        - name: 's4_user4'
+        - name: "s4_user4"
           append: false
           groups: []
 # test user with default groups only
-        - name: 's4_user5'
+        - name: "s4_user5"
       system_users__default_groups_list:
-        - 's4_group3'
-        - 's4_group4'
+        - "s4_group3"
+        - "s4_group4"
       system_users__default_groups_append: false
 
 - name: Test Scenario 2.5 - Append non-existent groups
   hosts: provision_docker__containers
-  remote_user: 'root'
+  remote_user: "root"
   pre_tasks:
     - name: Pre-Test - Create test groups
       group:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's5_group1'
-        - 's5_group2'
+        - "s5_group1"
+        - "s5_group2"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
     - name: Pre-Test - Create test users
       user:
-        name: '{{ item }}'
-        state: 'present'
+        name: "{{ item }}"
+        state: "present"
       with_items:
-        - 's5_user1'
+        - "s5_user1"
       changed_when: false
-      tags: [ 'pre-test' ]
+      tags: [ "pre-test" ]
   post_tasks:
     - name: Acceptance Test - Verify appending groups with list of non-existent groups
       user:
-        name: 's5_user1'
-        groups: 's5_group1,s5_group2'
-        state: 'present'
-      register: 'test_result'
+        name: "s5_user1"
+        groups: "s5_group1,s5_group2"
+        state: "present"
+      register: "test_result"
       failed_when: (test_result|failed or test_result|changed)
-      tags: [ 'acceptance-test' ]
+      tags: [ "acceptance-test" ]
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
       system_users__list:
 # test appending groups with list of non-existent groups
-        - name: 's5_user1'
+        - name: "s5_user1"
           append: true
           groups:
-            - 's5_group1'
-            - 's5_group3'
+            - "s5_group1"
+            - "s5_group3"
       system_users__default_groups_list:
-        - 's5_group2'
-        - 's5_group4'
+        - "s5_group2"
+        - "s5_group4"
       system_users__default_groups_append: true

@@ -1,37 +1,37 @@
 ---
 - name: Configure - Create list of available system groups
-  shell: 'getent group|cut -f1 -d:'
-  register: 'system_users__register_system_groups'
+  shell: "getent group|cut -f1 -d:"
+  register: "system_users__register_system_groups"
   changed_when: false
-  tags: [ 'configure' ]
+  tags: [ "configure" ]
 
 - name: Configure - Update users groups
   user:
-    name: '{{ item.name }}'
-    append: '{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary(true, false) }}'
-    groups: '{{ item.groups
+    name: "{{ item.name }}"
+    append: "{{ (system_users__default_groups_append and item.append is defined and item.append|bool)|ternary(true, false) }}"
+    groups: "{{ item.groups
                   |union((item.append is defined and item.append|bool)|ternary(system_users__default_groups_list, []))
                   |intersect(system_users__register_system_groups.stdout_lines)
-                  |join(",")  }}'
-    state: 'present'
+                  |join(',')  }}"
+    state: "present"
   with_flattened:
-    - '{{ system_users__ansible }}'
-    - '{{ system_users__list }}'
-  when: ((item.name is defined and item.name|trim and item.name != 'root') and
+    - "{{ system_users__ansible }}"
+    - "{{ system_users__list }}"
+  when: ((item.name is defined and item.name|trim and item.name != "root") and
          (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is defined and item.groups is sequence and item.groups is not string))
-  tags: [ 'configure' ]
+  tags: [ "configure" ]
 
 - name: Configure - Update users groups with default groups
   user:
-    name: '{{ item.name }}'
-    append: '{{ system_users__default_groups_append }}'
-    groups: '{{ system_users__default_groups_list|intersect(system_users__register_system_groups.stdout_lines)|join(",") }}'
-    state: 'present'
+    name: "{{ item.name }}"
+    append: "{{ system_users__default_groups_append }}"
+    groups: "{{ system_users__default_groups_list|intersect(system_users__register_system_groups.stdout_lines)|join(',') }}"
+    state: "present"
   with_flattened:
-    - '{{ system_users__ansible }}'
-    - '{{ system_users__list }}'
-  when: ((item.name is defined and item.name|trim and item.name != 'root') and
+    - "{{ system_users__ansible }}"
+    - "{{ system_users__list }}"
+  when: ((item.name is defined and item.name|trim and item.name != "root") and
          (item.disabled is undefined or not item.disabled|bool) and
          (item.groups is undefined))
-  tags: [ 'configure' ]
+  tags: [ "configure" ]

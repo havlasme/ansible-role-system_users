@@ -1,18 +1,18 @@
 ---
 - name: Configure - Create, and update system users home directories
   file:
-    path: '{{ item.home|default("~" + item.name) }}'
-    owner: '{{ item.home_owner|default(omit) }}'
-    group: '{{ item.home_group|default(omit) }}'
-    mode: '{{ item.home_mode|default(omit) }}'
-    state: 'directory'
+    path: "{{ item.home|default('~' + item.name) }}"
+    owner: "{{ item.home_owner|default(omit) }}"
+    group: "{{ item.home_group|default(omit) }}"
+    mode: "{{ item.home_mode|default(omit) }}"
+    state: "directory"
   with_flattened:
-    - '{{ system_users__ansible }}'
-    - '{{ system_users__list }}'
-  when: ((item.name is defined and item.name|trim and item.name != 'root') and
+    - "{{ system_users__ansible }}"
+    - "{{ system_users__list }}"
+  when: ((item.name is defined and item.name|trim and item.name != "root") and
          (item.disabled is undefined or not item.disabled|bool) and
          (item.createhome is undefined or item.createhome|bool) and
          ((item.home_owner is defined and item.home_owner|trim) or
           (item.home_group is defined and item.home_group|trim) or
           (item.home_mode is defined and item.home_mode|trim)))
-  tags: [ 'configure' ]
+  tags: [ "configure" ]

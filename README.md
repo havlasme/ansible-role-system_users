@@ -97,21 +97,21 @@ Example Playbook
 ```yaml
 - hosts: all
   roles:
-    - role: 'tomashavlas.system_users'
+    - role: "tomashavlas.system_users"
       system_users__ansible:
-        - name: 'ansible'
+        - name: "ansible"
           uid: 1500
           system: true
 
       system_users__list:
-        - name: 'commonuser'
-        - name: 'userhomedir'
+        - name: "commonuser"
+        - name: "userhomedir"
           createhome: true
-          home_owner: 'userhomedir'
+          home_owner: "userhomedir"
           home_mode: 0750
           generate_ssh_key: true
           ssh_key_bits: 4096
-          ssh_key_comment: 'test_ssh_key'
+          ssh_key_comment: "test_ssh_key"
 ```
 
 For more examples see [test cases](https://github.com/tomashavlas/ansible-role-system_users/tree/master/tests).
